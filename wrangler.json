@@ -1,9 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "shelsuntech-contact-worker",
-  "main": "worker.ts",
+  "name": "shelsuntech-website",
+  "pages_build_output_dir": "dist",
   "compatibility_date": "2026-07-02",
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "CONTACT_EMAIL": "contact@shelsuntech.com",
+    "FROM_EMAIL": "contact@shelsuntech.com",
+    "REPLY_FROM_EMAIL": "noreply@shelsun.com"
   }
 }

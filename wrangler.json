@@ -9,6 +9,6 @@
   "vars": {
     "CONTACT_EMAIL": "contact@shelsuntech.com",
     "FROM_EMAIL": "contact@shelsuntech.com",
-    "REPLY_FROM_EMAIL": "noreply@shelsuntech.com"
+    "REPLY_FROM_EMAIL": "noreply@shelsun.com"
   }
 }

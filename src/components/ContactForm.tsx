@@ -1,4 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+interface TurnstileOptions {
+  sitekey: string;
+  theme?: 'light' | 'dark' | 'auto';
+  callback?: (token: string) => void;
+  'expired-callback'?: (token: string) => void;
+  'error-callback'?: (error: any) => void;
+}
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: string | HTMLElement, options: TurnstileOptions) => string;
+      reset: (id?: string) => void;
+      remove: (id?: string) => void;
+    };
+  }
+}
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -13,6 +31,82 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success'>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const siteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY || '';
+
+    if (!siteKey) {
+      console.warn("VITE_TURNSTILE_SITE_KEY is missing. Turnstile widget will not render properly.");
+    }
+
+    const initTurnstile = () => {
+      if (!active || !turnstileRef.current || !window.turnstile) return;
+      
+      try {
+        if (widgetIdRef.current) {
+          window.turnstile.remove(widgetIdRef.current);
+          widgetIdRef.current = null;
+        }
+
+        const widgetId = window.turnstile.render(turnstileRef.current, {
+          sitekey: siteKey,
+          theme: 'dark',
+          callback: (token: string) => {
+            setTurnstileToken(token);
+            setErrors((prev) => {
+              const next = { ...prev };
+              delete next.turnstile;
+              return next;
+            });
+          },
+          'expired-callback': () => {
+            setTurnstileToken(null);
+          },
+          'error-callback': () => {
+            setTurnstileToken(null);
+          }
+        });
+        widgetIdRef.current = widgetId;
+      } catch (e) {
+        console.error("Failed to render Turnstile widget:", e);
+      }
+    };
+
+    if (window.turnstile) {
+      initTurnstile();
+    } else {
+      const checkInterval = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(checkInterval);
+          initTurnstile();
+        }
+      }, 500);
+
+      return () => {
+        clearInterval(checkInterval);
+        active = false;
+        if (widgetIdRef.current && window.turnstile) {
+          try {
+            window.turnstile.remove(widgetIdRef.current);
+          } catch (_) {}
+        }
+      };
+    }
+
+    return () => {
+      active = false;
+      if (widgetIdRef.current && window.turnstile) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch (_) {}
+      }
+    };
+  }, [submitStatus]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -38,6 +132,9 @@ export default function ContactForm() {
       nextErrors.phone = 'Contact number is required';
     }
     if (!formData.message.trim()) nextErrors.message = 'Please tell us about your project';
+    if (!turnstileToken) {
+      nextErrors.turnstile = 'Please complete the security check';
+    }
     return nextErrors;
   };
 
@@ -62,6 +159,7 @@ export default function ContactForm() {
         },
         body: JSON.stringify({
           ...formData,
+          'cf-turnstile-response': turnstileToken,
           pageUrl: window.location.href,
         }),
       });
@@ -69,14 +167,25 @@ export default function ContactForm() {
       const data = await response.json() as any;
 
       if (!response.ok || !data.success) {
+        if (window.turnstile && widgetIdRef.current) {
+          window.turnstile.reset(widgetIdRef.current);
+        }
+        setTurnstileToken(null);
         throw new Error(data.error || 'The server could not transmit your coordinate details. Please try again.');
       }
 
       console.log('Submission received successfully via Cloudflare Worker:', data);
       setSubmitStatus('success');
+      setTurnstileToken(null);
       setFormData({ name: '', company: '', email: '', phone: '', message: '' });
     } catch (err: any) {
       console.error('Submission failed:', err);
+      if (window.turnstile && widgetIdRef.current) {
+        try {
+          window.turnstile.reset(widgetIdRef.current);
+        } catch (_) {}
+      }
+      setTurnstileToken(null);
       setSubmitError(err.message || 'An unexpected error occurred. Please try again or reach out on WhatsApp.');
     } finally {
       setIsSubmitting(false);
@@ -255,6 +364,16 @@ export default function ContactForm() {
                   }`}
                 />
                 {errors.message && <span className="text-xs text-red-400 mt-1.5">{errors.message}</span>}
+              </div>
+
+              {/* Cloudflare Turnstile Widget */}
+              <div className="mb-6 flex flex-col items-center justify-center">
+                <div ref={turnstileRef} className="mx-auto" />
+                {errors.turnstile && (
+                  <span className="text-xs text-red-400 mt-2 text-center block">
+                    {errors.turnstile}
+                  </span>
+                )}
               </div>
 
               <button

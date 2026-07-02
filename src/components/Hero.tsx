@@ -140,12 +140,11 @@ export default function Hero() {
           Available for New Projects
         </div>
 
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6">
-          Engineering{' '}
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6 text-[#F0F4FA]">
+          AI Solutions That
+          <br />
           <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-            Intelligent
-            <br />
-            Digital Solutions
+            Help Businesses Grow
           </span>
         </h1>
 

@@ -22,6 +22,7 @@ export async function onRequestPost(context: { request: Request; env: any }) {
   try {
     const body = await request.json() as any;
     const { name, email, phone, message, company, pageUrl } = body;
+    const turnstileResponse = body["cf-turnstile-response"];
 
     console.log(`[Pages Function] Contact form submission received for: ${email || 'unknown'}`);
 
@@ -62,18 +63,77 @@ export async function onRequestPost(context: { request: Request; env: any }) {
     const fromEmail = env.FROM_EMAIL;
     const contactEmail = env.CONTACT_EMAIL;
     const replyFromEmail = env.REPLY_FROM_EMAIL;
+    const turnstileSecretKey = env.TURNSTILE_SECRET_KEY;
 
-    if (!apiKey || !fromEmail || !contactEmail || !replyFromEmail) {
+    if (!apiKey || !fromEmail || !contactEmail || !replyFromEmail || !turnstileSecretKey) {
       console.error("[Pages Function Config Error] Missing one or more required Cloudflare Environment Secrets:", {
         hasApiKey: !!apiKey,
         hasFromEmail: !!fromEmail,
         hasContactEmail: !!contactEmail,
-        hasReplyFromEmail: !!replyFromEmail
+        hasReplyFromEmail: !!replyFromEmail,
+        hasTurnstileSecretKey: !!turnstileSecretKey
       });
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Server configuration error: Missing required email environment variables (RESEND_API_KEY, FROM_EMAIL, CONTACT_EMAIL, or REPLY_FROM_EMAIL) on Cloudflare Pages.",
+          error: "Server configuration error: Missing required environment variables (RESEND_API_KEY, FROM_EMAIL, CONTACT_EMAIL, REPLY_FROM_EMAIL, or TURNSTILE_SECRET_KEY) on Cloudflare Pages.",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const ipAddress = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Real-IP") || "Unknown";
+
+    // Validate Turnstile Token
+    if (!turnstileResponse) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Security check failed: Please complete the security check.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    try {
+      const verifyResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          secret: turnstileSecretKey,
+          response: turnstileResponse,
+          remoteip: ipAddress === "Unknown" ? "" : ipAddress,
+        }),
+      });
+
+      const verifyData = await verifyResponse.json() as any;
+      if (!verifyData.success) {
+        console.error("[Pages Function] Turnstile verification failed:", verifyData);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Security check failed: Cloudflare Turnstile token validation failed.",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+    } catch (verifyErr: any) {
+      console.error("[Pages Function] Turnstile verification request failed:", verifyErr);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Security check failed: Unable to connect to Turnstile verification servers.",
         }),
         {
           status: 500,
@@ -95,7 +155,6 @@ export async function onRequestPost(context: { request: Request; env: any }) {
 
     const originUrl = pageUrl || request.headers.get("Referer") || "https://shelsuntech.com";
     const userAgent = request.headers.get("User-Agent") || "Unknown";
-    const ipAddress = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Real-IP") || "Unknown";
 
     // Draft lead notification email for the internal team
     const teamEmailHtml = `

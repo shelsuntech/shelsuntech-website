@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
         {/* Brand */}
         <div className="lg:col-span-2">
-          <Logo variant="horizontal" iconSize={50} className="mb-6" />
+          <Logo variant="horizontal" iconSize={60} className="mb-6" />
           <p className="text-[#F0F4FA]/50 text-sm leading-relaxed max-w-[280px] mb-6">
             Engineering intelligent digital solutions that transform operational structures and secure structural advantages.
           </p>

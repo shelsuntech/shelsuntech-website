@@ -22,8 +22,8 @@ export default function Navbar() {
           : 'bg-transparent border-transparent'
       }`}
     >
-      <a href="#" className="hover:opacity-90 active:scale-95 transition-all duration-200">
-        <Logo variant="horizontal" iconSize={54} />
+      <a href="#" className="hover:opacity-90 active:scale-95 transition-all duration-200 -ml-2 sm:-ml-4">
+        <Logo variant="horizontal" iconSize={82} />
       </a>
 
       <ul className="hidden md:flex gap-8 list-none">

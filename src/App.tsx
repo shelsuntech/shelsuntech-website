@@ -217,12 +217,12 @@ export default function App() {
       {/* Landing coordinates */}
       <main>
         <Hero />
+        <WhatsAppReceptionistProduct />
         <TrustedBy />
         <OperationalManifesto />
-        <Services />
         <IndustriesWeServe />
-        <WhatsAppReceptionistProduct />
         <Showcase />
+        <Services />
         <WhyUs />
         <ClientResults />
         <CaseStudies />

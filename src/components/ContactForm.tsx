@@ -38,10 +38,11 @@ export default function ContactForm() {
 
   useEffect(() => {
     let active = true;
-    const siteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY || '';
+    let siteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY || '';
 
     if (!siteKey) {
-      console.warn("VITE_TURNSTILE_SITE_KEY is missing. Turnstile widget will not render properly.");
+      console.warn("VITE_TURNSTILE_SITE_KEY is missing. Falling back to Cloudflare's always-pass testing sitekey.");
+      siteKey = '1x00000000000000000000AA';
     }
 
     const initTurnstile = () => {

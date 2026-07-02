@@ -7,6 +7,12 @@ export default function Cursor() {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (isTouch) {
+      setIsVisible(false);
+      return;
+    }
+
     setIsVisible(true);
     document.documentElement.classList.add('cursor-none');
 

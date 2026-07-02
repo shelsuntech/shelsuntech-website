@@ -19,7 +19,15 @@ export default function Logo({ variant = 'horizontal', className = '', iconSize 
         viewBox="0 0 92 44"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="flex-shrink-0 animate-pulse-slow"
+        className={`flex-shrink-0 animate-pulse-slow h-auto ${
+          isVertical
+            ? 'w-16'
+            : iconSize >= 80
+              ? 'w-[44px] xs:w-[56px] sm:w-[68px] md:w-[82px]'
+              : iconSize >= 48
+                ? 'w-[36px] sm:w-[48px]'
+                : 'w-[28px] sm:w-[36px]'
+        }`}
         shapeRendering="geometricPrecision"
       >
         <defs>
@@ -112,10 +120,10 @@ export default function Logo({ variant = 'horizontal', className = '', iconSize 
           isVertical 
             ? 'text-2xl gap-1' 
             : iconSize >= 80
-              ? 'text-[2.1rem] gap-1.5 leading-none'
+              ? 'text-base xs:text-lg sm:text-xl md:text-[2.1rem] gap-1 md:gap-1.5 leading-none'
               : iconSize >= 48 
-                ? 'text-[1.75rem] gap-1 leading-none' 
-                : 'text-[1.35rem] gap-0.5 leading-none'
+                ? 'text-sm sm:text-[1.75rem] gap-1 leading-none' 
+                : 'text-xs sm:text-[1.35rem] gap-0.5 leading-none'
         }`}>
           <span className="text-[#F0F4FA] font-sans">ShelSun</span>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400 font-sans">Tech</span>
@@ -125,10 +133,10 @@ export default function Logo({ variant = 'horizontal', className = '', iconSize 
             isVertical 
               ? 'text-[0.62rem] mt-1' 
               : iconSize >= 80
-                ? 'text-[0.66rem] mt-1.5'
+                ? 'hidden sm:inline-block text-[0.45rem] md:text-[0.66rem] mt-1 md:mt-1.5'
                 : iconSize >= 48 
-                  ? 'text-[0.58rem] mt-1' 
-                  : 'text-[0.45rem] mt-0.5'
+                  ? 'hidden xs:inline-block text-[0.45rem] sm:text-[0.58rem] mt-1' 
+                  : 'hidden xs:inline-block text-[0.4rem] sm:text-[0.45rem] mt-0.5'
           }`}
         >
           Intelligent Solutions. Limitless Possibilities.

@@ -1,0 +1,37 @@
+# ShelSunTech
+
+Intelligent Solutions. Limitless Possibilities.
+
+ShelSunTech is a premier full-stack software development and artificial intelligence engineering agency operating in India, Kuwait, the wider GCC region, and the US. We specialize in building custom AI systems, autonomous voice and chat agents, enterprise automation, and high-performance bespoke software.
+
+## Core Products & Solutions
+
+### 1. AI WhatsApp Receptionist & Business Automation
+An autonomous, conversational agent deployed directly on WhatsApp to interface with customers 24/7/365.
+- **Key Capabilities**: Fully autonomous qualification of customer leads, context-aware Q&A, instant booking into sales calendars, real-time database/CRM synchronization, and support for English & Arabic.
+- **Benefits**: Eradicates missed leads, cuts down response latency to seconds, and operates with zero human intervention.
+
+### 2. Custom Web & Software Development
+High-velocity, responsive web platforms built for reliability and scale.
+- **Technologies**: React, Next.js, Node.js, Tailwind CSS, PostgreSQL, Cloud SQL.
+- **Offerings**: Custom ERPs, CRMs, client portals, and bespoke web platforms engineered with native speed and SEO optimizations.
+
+### 3. Workflow & Business Process Automation
+End-to-end integration of corporate tools (CRMs, ERPs, email systems) with smart AI processing pipelines to optimize team efficiency.
+
+---
+
+## Contact & Organization Metadata
+
+- **Company Name**: ShelSunTech
+- **Official Website**: https://shelsuntech.com
+- **Inquiries & Support Email**: info@shelsuntech.com
+- **Phone / WhatsApp Contact**: +91-80766-64199
+- **Geographic Focus**: India, Kuwait, United Arab Emirates, Saudi Arabia, Qatar, Bahrain, Oman, United States.
+- **Social Presence**: LinkedIn (https://www.linkedin.com/company/131874101/)
+
+---
+
+## AI Crawling & Scraping Guidelines
+- This site follows standard schema rules and exposes programmatic JSON-LD organization metadata on the homepage.
+- For product-specific schemas, refer to the Organization, WebSite, and Service schemas embedded within the head of `https://shelsuntech.com/`.

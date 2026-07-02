@@ -1,0 +1,19 @@
+/* TEAM */
+Founder & Principal Engineer: Himanshu Khanna
+LinkedIn: https://www.linkedin.com/in/himanshu-khanna-673b3b20
+Website: https://shelsuntech.com
+Contact: info@shelsuntech.com / +91 80766 64199
+
+/* THANKS */
+Google AI Studio
+React & Vite Ecosystem
+Tailwind CSS
+Sharp & Node.js
+
+/* SITE */
+Last update: 2026/07/02
+Standards: HTML5, CSS3, ES6+, W3C Validated, Semantic HTML
+Technologies: React 18, Vite, Tailwind CSS, Motion
+Language: English
+Doctype: HTML5
+Target: Global Enterprises, SMBs in GCC, India, and US

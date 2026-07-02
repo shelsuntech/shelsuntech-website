@@ -7,35 +7,26 @@ export default function Cursor() {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouch) {
-      setIsVisible(false);
-      return;
-    }
-
-    setIsVisible(true);
-    document.documentElement.classList.add('cursor-none');
-
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
     let rx = mx;
     let ry = my;
 
     const onMouseMove = (e: MouseEvent) => {
+      setIsVisible(true);
+      document.documentElement.classList.add('custom-cursor-active');
       mx = e.clientX;
       my = e.clientY;
     };
 
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        mx = e.touches[0].clientX;
-        my = e.touches[0].clientY;
-      }
+    const onTouchStart = () => {
+      setIsVisible(false);
+      document.documentElement.classList.remove('custom-cursor-active');
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('touchstart', onTouchMove, { passive: true });
+    window.addEventListener('touchmove', onTouchStart, { passive: true });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
 
     // Dynamic Hover delegation
     const onMouseOver = (e: MouseEvent) => {
@@ -74,11 +65,11 @@ export default function Cursor() {
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchstart', onTouchMove);
+      window.removeEventListener('touchmove', onTouchStart);
+      window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('mouseover', onMouseOver);
       cancelAnimationFrame(animationFrameId);
-      document.documentElement.classList.remove('cursor-none');
+      document.documentElement.classList.remove('custom-cursor-active');
       document.body.classList.remove('hovering');
     };
   }, []);

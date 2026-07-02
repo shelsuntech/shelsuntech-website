@@ -6,6 +6,7 @@
   "observability": {
     "enabled": true
   },
+  
   "vars": {
     "CONTACT_EMAIL": "contact@shelsuntech.com",
     "FROM_EMAIL": "contact@shelsuntech.com",
